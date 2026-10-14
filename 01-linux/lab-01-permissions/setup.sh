@@ -42,13 +42,7 @@ ensure_user() {
       "$name"
   fi
 
-  # Lab accounts are used with sudo/runuser. They have no password.
-  local locked
-  locked=$(getent shadow "$name" | cut -d: -f2)
-  case "$locked" in
-    '!'*|'*'*) ;;
-    *) usermod --lock "$name" ;;
-  esac
+  printf '%s:%s\n' "$name" "$(lab_password "$name")" | chpasswd
 }
 
 drop_sam_from_engineering() {
@@ -172,6 +166,7 @@ Harbor permissions lab is ready.
 Directory: /srv/harbor-lab
 Next: read README.md
 
-Lab users have no passwords. Example:
-  sudo -u lab-nora ls -l /srv/harbor-lab/bin
+Log in as a lab user with su. Passwords are in README.md.
+Example:
+  su - lab-nora
 EOF

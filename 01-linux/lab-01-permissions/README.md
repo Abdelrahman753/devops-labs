@@ -18,11 +18,28 @@ After a rushed cleanup, Harbor staff cannot use files under `/srv/harbor-lab`. A
 curl -fsSL https://raw.githubusercontent.com/Abdelrahman753/devops-labs/main/01-linux/lab-01-permissions/bootstrap.sh | sudo bash
 ```
 
-2. Try each problem as that user, for example `sudo -u lab-nora`. The accounts have no password.
-3. Inspect the file and the user. Restore only the access described.
+2. Log in as the user and try the problem. After you change access, log in again and try the same command. Type `exit` to come back.
+
+```bash
+su - lab-nora
+/srv/harbor-lab/bin/deploy-check.sh
+exit
+```
+
+| Account | Password | Who they are |
+| --- | --- | --- |
+| `lab-nora` | `nora-lab1` | Developer |
+| `lab-omar` | `omar-lab1` | Developer |
+| `lab-sam` | `sam-lab1` | New developer |
+| `lab-lee` | `lee-lab1` | Support |
+| `lab-app` | `app-lab1` | Application account |
+| `lab-backup` | `backup-lab1` | Backup account |
+| `lab-guest` | `guest-lab1` | Must not see private files |
+
+3. Inspect the file and the user with `ls -l`, `stat`, `id`, and `groups`. Restore only the access described.
 4. Do not make a file or directory writable by every user.
 
-`lab-nora` and `lab-omar` are developers. `lab-sam` is new. `lab-lee` is support. `lab-app` runs the app. `lab-backup` saves archives. `lab-guest` must not see private files.
+These are the problems:
 
 1. `lab-nora` cannot run `/srv/harbor-lab/bin/deploy-check.sh`. It should print `deploy-check: ok`.
 2. `lab-omar` cannot open `/srv/harbor-lab/projects`. `lab-guest` must stay out.

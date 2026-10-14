@@ -48,3 +48,20 @@ is_lab_user() {
   done
   return 1
 }
+
+# Lab-only passwords. Students use these with su.
+lab_password() {
+  case "$1" in
+    lab-nora) printf '%s' 'nora-lab1' ;;
+    lab-omar) printf '%s' 'omar-lab1' ;;
+    lab-sam) printf '%s' 'sam-lab1' ;;
+    lab-lee) printf '%s' 'lee-lab1' ;;
+    lab-app) printf '%s' 'app-lab1' ;;
+    lab-backup) printf '%s' 'backup-lab1' ;;
+    lab-guest) printf '%s' 'guest-lab1' ;;
+    *)
+      echo "No lab password for $1" >&2
+      return 1
+      ;;
+  esac
+}
