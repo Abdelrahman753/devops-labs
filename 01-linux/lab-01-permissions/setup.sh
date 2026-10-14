@@ -170,7 +170,7 @@ cat <<EOF
 Harbor permissions lab is ready.
 
 Directory: /srv/harbor-lab
-Next: read README.md, then tickets/01-deploy-script.md
+Next: read README.md
 
 Lab users have no passwords. Example:
   sudo -u lab-nora ls -l /srv/harbor-lab/bin

@@ -2,72 +2,55 @@
 
 ## Incident
 
-After a rushed cleanup, Harbor staff cannot use scripts, shared folders, logs, and other files under `/srv/harbor-lab`. A few private files are readable by people who should not see them.
+After a rushed cleanup, Harbor staff cannot use files under `/srv/harbor-lab`. A few private files are open to the wrong people.
 
 ## Objectives
 
-- Inspect accounts with `id` and `groups`.
-- Inspect files and directories with `ls -l` and `stat`.
-- Restore the access each ticket asks for.
-- Leave unrelated users and system files alone.
+- See who can use each file with `id`, `groups`, `ls -l`, and `stat`.
+- Restore the access listed below.
+- Leave other users and system files alone.
 
 ## Instructions
 
-On any Ubuntu VM, prepare the lab with one command:
+1. Start the lab. You need Ubuntu and sudo.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/Abdelrahman753/devops-labs/main/01-linux/lab-01-permissions/bootstrap.sh | sudo bash
 ```
 
-That downloads this lab to `/opt/harbor-permissions-lab` and creates the broken starting state. You need permission to create local users. The script adds only the lab accounts below.
+2. Try each problem as that user, for example `sudo -u lab-nora`. The accounts have no password.
+3. Inspect the file and the user. Restore only the access described.
+4. Do not make a file or directory writable by every user.
 
-| Account | Who they are |
-| --- | --- |
-| `lab-nora` | Developer |
-| `lab-omar` | Developer |
-| `lab-sam` | New developer |
-| `lab-lee` | Support |
-| `lab-app` | Application account |
-| `lab-backup` | Backup account |
-| `lab-guest` | A person who should not see private files |
+`lab-nora` and `lab-omar` are developers. `lab-sam` is new. `lab-lee` is support. `lab-app` runs the app. `lab-backup` saves archives. `lab-guest` must not see private files.
 
-These accounts have no password. Run a command as one of them with `sudo`:
-
-```bash
-sudo -u lab-nora ls -l /srv/harbor-lab/bin
-```
-
-Open the tickets in order. Reproduce the problem as the account named in the ticket, then fix that ticket only. Do not make a file or directory writable by every user. `lab-guest` stands in for an unauthorized person.
-
-1. [Deploy check will not run](tickets/01-deploy-script.md)
-2. [Engineering cannot open the project directory](tickets/02-shared-projects.md)
-3. [Release marker owned by the wrong person](tickets/03-wrong-owner.md)
-4. [Developers cannot edit the roadmap](tickets/04-shared-roadmap.md)
-5. [Support cannot read the app log](tickets/05-support-logs.md)
-6. [Database password is readable by everyone](tickets/06-world-readable-secret.md)
-7. [New developer cannot read the handbook](tickets/07-new-team-member.md)
-8. [Owner cannot open the archive notes](tickets/08-parent-directory.md)
-9. [Backup account cannot save archives](tickets/09-backup-directory.md)
-10. [App cannot read its config](tickets/10-app-config.md)
+1. `lab-nora` cannot run `/srv/harbor-lab/bin/deploy-check.sh`. It should print `deploy-check: ok`.
+2. `lab-omar` cannot open `/srv/harbor-lab/projects`. `lab-guest` must stay out.
+3. `/srv/harbor-lab/releases/version.txt` is owned by `lab-omar`. `lab-app` must own it and be able to change it. `lab-guest` must not read it.
+4. `lab-omar` cannot save `/srv/harbor-lab/shared/roadmap.md`. Both developers need to edit it. `lab-guest` must not.
+5. `lab-lee` cannot read `/srv/harbor-lab/logs/app.log`. `lab-app` still can. `lab-guest` must not. Do not add `lab-lee` to another group.
+6. `lab-guest` and `lab-nora` can read `/srv/harbor-lab/secrets/db.env`. Only `lab-app` should read it.
+7. `lab-sam` cannot read `/srv/harbor-lab/team/handbook.md`. The other developers can. `lab-guest` must not. The owner stays `root`.
+8. `lab-nora` owns `/srv/harbor-lab/archive/2024/q4.txt` and still cannot read it. `lab-guest` must not.
+9. `lab-backup` cannot create a file in `/srv/harbor-lab/backups`. `lab-guest` must not.
+10. `lab-app` cannot read `/srv/harbor-lab/config/app.conf`. `lab-nora` can, and stays the owner. `lab-guest` must not. Do not add `lab-app` to `lab-engineering`.
 
 ## You are done when
 
-- Every ticket's checks succeed when you run them as the affected account.
+- Each line above works when you try it as that user.
 - `lab-guest` cannot read the database password or the app log.
-- No file or directory under `/srv/harbor-lab` is writable by every user.
+- Nothing under `/srv/harbor-lab` is writable by every user.
 - `sudo bash /opt/harbor-permissions-lab/tests/check-fixed.sh` prints `All fixed-state checks passed.`
 
 ## Reset
-
-Return to the broken starting state. Lab users stay on the machine. The command is safe to run twice.
 
 ```bash
 sudo bash /opt/harbor-permissions-lab/reset.sh
 ```
 
-## Cleanup
+Lab users stay on the machine. The command is safe to run twice.
 
-When the class is over, remove only this lab:
+## Cleanup
 
 ```bash
 sudo bash /opt/harbor-permissions-lab/cleanup.sh

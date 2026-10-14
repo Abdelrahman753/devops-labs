@@ -26,23 +26,16 @@ files=(
   tests/helpers.sh
   tests/check-broken.sh
   tests/check-fixed.sh
-  tickets/01-deploy-script.md
-  tickets/02-shared-projects.md
-  tickets/03-wrong-owner.md
-  tickets/04-shared-roadmap.md
-  tickets/05-support-logs.md
-  tickets/06-world-readable-secret.md
-  tickets/07-new-team-member.md
-  tickets/08-parent-directory.md
-  tickets/09-backup-directory.md
-  tickets/10-app-config.md
 )
 
 install -d -m 755 \
   "${DEST}" \
   "${DEST}/lib" \
-  "${DEST}/tests" \
-  "${DEST}/tickets"
+  "${DEST}/tests"
+
+if [[ -d "${DEST}/tickets" ]]; then
+  rm -rf -- "${DEST}/tickets"
+fi
 
 for file in "${files[@]}"; do
   echo "Fetching ${file}"
@@ -61,7 +54,7 @@ bash "${DEST}/setup.sh"
 cat <<EOF
 
 Lab files: ${DEST}
-Next:      ${DEST}/tickets/01-deploy-script.md
+Next:      ${DEST}/README.md
 Reset:     sudo bash ${DEST}/reset.sh
 Cleanup:   sudo bash ${DEST}/cleanup.sh
 EOF

@@ -1,6 +1,6 @@
 # Instructor solution — Harbor permissions incidents
 
-Trainees do not receive this file. Apply it only after they have tried the tickets.
+Trainees do not receive this file. Apply it only after they have tried the scenarios in README.md.
 
 From the lab folder:
 
